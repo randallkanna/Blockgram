@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
+import ipfs from './ipfs';
 import getWeb3 from './utils/getWeb3'
 
 import './css/oswald.css'
@@ -12,9 +13,13 @@ class App extends Component {
     super(props)
 
     this.state = {
-      storageValue: 0,
-      web3: null
+      web3: null,
+      ipfsBuffer: null,
     }
+
+    this.captureUpload = this.captureUpload.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.showPhotos = this.showPhotos.bind(this);
   }
 
   componentWillMount() {
@@ -26,8 +31,6 @@ class App extends Component {
       this.setState({
         web3: results.web3
       })
-
-      // Instantiate contract once web3 provided.
       this.instantiateContract()
     })
     .catch(() => {
@@ -36,21 +39,11 @@ class App extends Component {
   }
 
   instantiateContract() {
-    /*
-     * SMART CONTRACT EXAMPLE
-     *
-     * Normally these functions would be called in the context of a
-     * state management library, but for convenience I've placed them here.
-     */
-
     const contract = require('truffle-contract')
     const simpleStorage = contract(SimpleStorageContract)
     simpleStorage.setProvider(this.state.web3.currentProvider)
-
-    // Declaring this for later so we can chain functions on SimpleStorage.
     var simpleStorageInstance
 
-    // Get accounts.
     this.state.web3.eth.getAccounts((error, accounts) => {
       simpleStorage.deployed().then((instance) => {
         simpleStorageInstance = instance
@@ -67,22 +60,57 @@ class App extends Component {
     })
   }
 
+  showPhotos() {
+    
+  }
+
+  captureUpload(event) {
+    event.preventDefault()
+    const file = event.target.files[0]
+    const reader = new window.FileReader()
+
+    reader.readAsArrayBuffer(file)
+    reader.onloadend = () => {
+      this.setState({ ipfsBuffer: Buffer(reader.result) })
+    }
+  }
+
+  onSubmit(e) {
+    e.preventDefault()
+
+    var results = new Promise((resolve, reject) => {
+      ipfs.files.add(this.state.ipfsBuffer, (err, result) => {
+        if (err) {
+          console.error(err)
+          return
+        }
+
+        const url = `https://ipfs.io/ipfs/${result[0].hash}`;
+        console.log(`Url: ${url}`)
+      })
+    })
+
+    results.then(() => {
+      // TODO: add hash to firebase
+      this.showPhotos();
+    })
+  }
+
   render() {
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Truffle Box</a>
+            <a href="#" className="pure-menu-heading pure-menu-link">Ethos Social</a>
         </nav>
 
         <main className="container">
           <div className="pure-g">
             <div className="pure-u-1-1">
-              <h1>Good to Go!</h1>
-              <p>Your Truffle Box is installed and ready.</p>
-              <h2>Smart Contract Example</h2>
-              <p>If your contracts compiled and migrated successfully, below will show a stored value of 5 (by default).</p>
-              <p>Try changing the value stored on <strong>line 59</strong> of App.js.</p>
-              <p>The stored value is: {this.state.storageValue}</p>
+              <div className="upload-placeholder">Upload Image</div>
+              <form onSubmit={this.onSubmit}>
+                <input type="file" onChange={this.captureUpload} />
+                <input type="submit" />
+              </form>
             </div>
           </div>
         </main>

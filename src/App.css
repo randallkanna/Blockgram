@@ -22,6 +22,10 @@ code {
   padding: 45px 20px;
 }
 
+.upload-placeholder {
+  margin-top: 25px;
+}
+
 .pure-button-primary {
   background-color: #0c1a2b;
 }
@@ -39,6 +43,7 @@ code {
 .navbar {
   position: fixed;
   padding: 5px;
+  top: 0;
   background: #0c1a2b;
   font-family: 'Oswald', 'Arial Narrow', sans-serif;
 }
