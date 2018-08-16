@@ -1,12 +1,11 @@
-import React, { Component } from 'react'
-import SimpleStorageContract from '../build/contracts/SimpleStorage.json'
-import ipfs from './ipfs';
-import getWeb3 from './utils/getWeb3'
+import React, { Component } from 'react';
+import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
+import Photo from '../Photo/index.js';
+import ipfs from '../../ipfs';
+import getWeb3 from '../../utils/getWeb3';
+import firebase from '../../firebase.js'
 
-import './css/oswald.css'
-import './css/open-sans.css'
-import './css/pure-min.css'
-import './App.css'
+import './style.css'
 
 class App extends Component {
   constructor(props) {
@@ -15,17 +14,19 @@ class App extends Component {
     this.state = {
       web3: null,
       ipfsBuffer: null,
+      completePhotosList: [],
+      photos: {},
     }
+
+    this.photosRef = firebase.database().ref('photos');
 
     this.captureUpload = this.captureUpload.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.showPhotos = this.showPhotos.bind(this);
+    this.addHash = this.addHash.bind(this);
   }
 
   componentWillMount() {
-    // Get network provider and web3 instance.
-    // See utils/getWeb3 for more info.
-
     getWeb3
     .then(results => {
       this.setState({
@@ -36,6 +37,25 @@ class App extends Component {
     .catch(() => {
       console.log('Error finding web3.')
     })
+  }
+
+  componentDidMount() {
+    const photosRef = firebase.database().ref('photos');
+     this.photosRef.on('value', (snapshot) => {
+       let photos = snapshot.val();
+       let newState = [];
+       for (let photo in photos) {
+         newState.push({
+           hash: photos[photo].hash
+         });
+       }
+
+       this.setState({
+         photos: newState
+       });
+
+       this.showPhotos();
+     });
   }
 
   instantiateContract() {
@@ -60,8 +80,30 @@ class App extends Component {
     })
   }
 
+  componentWillUnmount() {
+    firebase.removeBinding(this.photosRef);
+  }
+
   showPhotos() {
-    
+    const photoHashList = this.state.photos;
+    const photos = [];
+    const currentComponent = this;
+
+    if (photoHashList.length > 0) {
+      var results = new Promise((resolve, reject) => {
+        photoHashList.map(function(ipfsHash) {
+          var hash = ipfsHash.hash;
+
+          photos.push(hash);
+        })
+
+        resolve();
+      })
+
+      results.then(() => {
+        this.setState({ completePhotosList: photos });
+      });
+    }
   }
 
   captureUpload(event) {
@@ -73,6 +115,12 @@ class App extends Component {
     reader.onloadend = () => {
       this.setState({ ipfsBuffer: Buffer(reader.result) })
     }
+  }
+
+  addHash(hash) {
+    this.photosRef.push({
+      hash,
+    })
   }
 
   onSubmit(e) {
@@ -87,16 +135,22 @@ class App extends Component {
 
         const url = `https://ipfs.io/ipfs/${result[0].hash}`;
         console.log(`Url: ${url}`)
+        this.addHash(result[0].hash);
+
+        resolve();
       })
     })
 
     results.then(() => {
-      // TODO: add hash to firebase
       this.showPhotos();
     })
   }
 
   render() {
+    const photos = this.state.completePhotosList.map((photo, index) =>
+      <Photo photo={photo} index={index} key={index} />
+    );
+
     return (
       <div className="App">
         <nav className="navbar pure-menu pure-menu-horizontal">
@@ -111,6 +165,9 @@ class App extends Component {
                 <input type="file" onChange={this.captureUpload} />
                 <input type="submit" />
               </form>
+
+              <h3>Photos</h3>
+                {photos}
             </div>
           </div>
         </main>
