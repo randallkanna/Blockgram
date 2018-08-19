@@ -1,10 +1,12 @@
 import React, { Component } from 'react';
 import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
-import Photo from '../Photo/index.js';
 import ipfs from '../../ipfs';
 import getWeb3 from '../../utils/getWeb3';
 import firebase from '../../firebase.js'
 
+import Nav from '../../Navbar.js';
+import Photo from '../Photo/index.js';
+import { Button, Row, Grid, Col, Media, Modal, } from 'react-bootstrap'
 import './style.css'
 
 class App extends Component {
@@ -134,7 +136,7 @@ class App extends Component {
         }
 
         const url = `https://ipfs.io/ipfs/${result[0].hash}`;
-        console.log(`Url: ${url}`)
+        console.log(`${url}`)
         this.addHash(result[0].hash);
 
         resolve();
@@ -152,25 +154,24 @@ class App extends Component {
     );
 
     return (
-      <div className="App">
-        <nav className="navbar pure-menu pure-menu-horizontal">
-            <a href="#" className="pure-menu-heading pure-menu-link">Ethos Social</a>
-        </nav>
-
-        <main className="container">
-          <div className="pure-g">
-            <div className="pure-u-1-1">
-              <div className="upload-placeholder">Upload Image</div>
-              <form onSubmit={this.onSubmit}>
-                <input type="file" onChange={this.captureUpload} />
-                <input type="submit" />
-              </form>
-
-              <h3>Photos</h3>
-                {photos}
-            </div>
-          </div>
-        </main>
+      <div className="nav-bar-custom">
+        <Nav/>
+        <div>
+          <Grid>
+            <Row className="show-grid">
+              <Col md={4}>
+                <form onSubmit={this.onSubmit}>
+                  <input type="file" onChange={this.captureUpload} />
+                  <input type="submit" />
+                </form>
+              <Col md={8}>
+                <h3>Photos</h3>
+                  {photos}
+              </Col>
+              </Col>
+            </Row>
+          </Grid>
+      </div>
       </div>
     );
   }
