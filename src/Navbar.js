@@ -7,13 +7,11 @@ export default class myNav extends React.Component {
         <Navbar>
           <Navbar.Header>
             <Navbar.Brand>
-              <a href="/">Ethos Social</a>
+              <a href="/">Blockgram</a>
             </Navbar.Brand>
           </Navbar.Header>
-          <Navbar.Collapse>
-            <Nav>
-            </Nav>
-          </Navbar.Collapse>
+          <Nav>
+          </Nav>
         </Navbar>
       );
     }

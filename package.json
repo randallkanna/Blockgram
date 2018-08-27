@@ -52,9 +52,9 @@
     "dotenv": "^2.0.0",
     "firebase": "^5.3.1",
     "ipfs-api": "^24.0.0",
-    "react": "^15.4.2",
-    "react-bootstrap": "^0.32.1",
-    "react-dom": "^15.4.2"
+    "react": "^15.6.2",
+    "react-bootstrap": "^0.32.3",
+    "react-dom": "^15.6.2"
   },
   "scripts": {
     "start": "node scripts/start.js",
