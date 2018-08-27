@@ -12,6 +12,7 @@ class Photo extends Component {
   }
 
   componentWillMount() {
+    
   }
 
   render() {
