@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './style.css'
 // import ipfs from './ipfs';
 // import getWeb3 from './utils/getWeb3'
 
@@ -12,12 +13,12 @@ class Photo extends Component {
   }
 
   componentWillMount() {
-    
+
   }
 
   render() {
     return (
-      <div>
+      <div className="photo">
         <img src={`https://ipfs.io/ipfs/${this.props.photo}`} alt=""/>
       </div>
     )

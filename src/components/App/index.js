@@ -154,7 +154,7 @@ class App extends Component {
     );
 
     return (
-      <div className="nav-bar-custom">
+      <div>
         <Nav/>
         <div>
           <Grid>

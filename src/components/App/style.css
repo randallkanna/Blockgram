@@ -10,8 +10,7 @@ h1, h2, h3 {
 
 body {
   font-family: sans-serif !important;
-  margin: 0;
-  position: relative;
+  background-color: #fafafa;
 }
 
 .padding-top-sm {
@@ -47,12 +46,6 @@ code {
   padding: 0 20px;
 }
 
-.container {
-  box-sizing: border-box;
-  width: 100%;
-  padding: 45px 20px;
-}
-
 .pure-button-primary {
   background-color: #0c1a2b;
 }
@@ -67,45 +60,7 @@ code {
 
 /* NAVBAR */
 
-.nav-bar-custom .container {
-  padding: 0px 10px !important;
-}
-
 .navbar {
-  position: fixed;
-  padding: 5px;
-  background: #0c1a2b;
-  font-family: 'Oswald', 'Arial Narrow', sans-serif;
-}
-
-.navbar-default .navbar-brand {
-  color: white !important;
-}
-
-.navbar-default .navbar-nav>li>a {
-  color: white !important;
-}
-
-.navbar a {
-  color: white;
-}
-
-.navbar a:active,
-.navbar a:focus,
-.navbar a:hover {
-  background: #233e5e;
-}
-
-.navbar .pure-menu-heading {
-  font-weight: bold;
-  text-transform: none;
-}
-
-.navbar .navbar-right {
-  float: right;
-}
-
-.navbar .uport-logo {
-  height: 16px;
-  margin-right: 10px;
+  border-radius: 0;
+  background-color: #fff !important;
 }
