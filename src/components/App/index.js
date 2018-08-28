@@ -22,10 +22,7 @@ class App extends Component {
 
     this.photosRef = firebase.database().ref('photos');
 
-    this.captureUpload = this.captureUpload.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.showPhotos = this.showPhotos.bind(this);
-    this.addHash = this.addHash.bind(this);
   }
 
   componentWillMount() {
@@ -108,46 +105,6 @@ class App extends Component {
     }
   }
 
-  captureUpload(event) {
-    event.preventDefault()
-    const file = event.target.files[0]
-    const reader = new window.FileReader()
-
-    reader.readAsArrayBuffer(file)
-    reader.onloadend = () => {
-      this.setState({ ipfsBuffer: Buffer(reader.result) })
-    }
-  }
-
-  addHash(hash) {
-    this.photosRef.push({
-      hash,
-    })
-  }
-
-  onSubmit(e) {
-    e.preventDefault()
-
-    var results = new Promise((resolve, reject) => {
-      ipfs.files.add(this.state.ipfsBuffer, (err, result) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-
-        const url = `https://ipfs.io/ipfs/${result[0].hash}`;
-        console.log(`${url}`)
-        this.addHash(result[0].hash);
-
-        resolve();
-      })
-    })
-
-    results.then(() => {
-      this.showPhotos();
-    })
-  }
-
   render() {
     const photos = this.state.completePhotosList.map((photo, index) =>
       <Photo photo={photo} index={index} key={index} />
@@ -155,19 +112,13 @@ class App extends Component {
 
     return (
       <div>
-        <Nav/>
+        <Nav parentMethod={this.showPhotos} />
         <div>
           <Grid>
             <Row className="show-grid">
-              <Col md={4}>
-                <form onSubmit={this.onSubmit}>
-                  <input type="file" onChange={this.captureUpload} />
-                  <input type="submit" />
-                </form>
               <Col md={8}>
                 <h3>Photos</h3>
                   {photos}
-              </Col>
               </Col>
             </Row>
           </Grid>
