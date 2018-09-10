@@ -1,0 +1,104 @@
+{
+  "contractName": "Fund",
+  "abi": [],
+  "bytecode": "0x6080604052348015600f57600080fd5b50603580601d6000396000f3006080604052600080fd00a165627a7a723058208741e86d76ef28986f9e588cf62bc18fa4a6474c758c81f5b0d637b0896c77630029",
+  "deployedBytecode": "0x6080604052600080fd00a165627a7a723058208741e86d76ef28986f9e588cf62bc18fa4a6474c758c81f5b0d637b0896c77630029",
+  "sourceMap": "26:20:0:-;;;;8:9:-1;5:2;;;30:1;27;20:12;5:2;26:20:0;;;;;;;",
+  "deployedSourceMap": "26:20:0:-;;;;;",
+  "source": "pragma solidity ^0.4.18;\n\ncontract Fund {\n  \n}\n",
+  "sourcePath": "/Users/randallkanna/Documents/code/eth/ethos_social/contracts/Fund.sol",
+  "ast": {
+    "absolutePath": "/Users/randallkanna/Documents/code/eth/ethos_social/contracts/Fund.sol",
+    "exportedSymbols": {
+      "Fund": [
+        2
+      ]
+    },
+    "id": 3,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".18"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:0"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2,
+        "linearizedBaseContracts": [
+          2
+        ],
+        "name": "Fund",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3,
+        "src": "26:20:0"
+      }
+    ],
+    "src": "0:47:0"
+  },
+  "legacyAST": {
+    "absolutePath": "/Users/randallkanna/Documents/code/eth/ethos_social/contracts/Fund.sol",
+    "exportedSymbols": {
+      "Fund": [
+        2
+      ]
+    },
+    "id": 3,
+    "nodeType": "SourceUnit",
+    "nodes": [
+      {
+        "id": 1,
+        "literals": [
+          "solidity",
+          "^",
+          "0.4",
+          ".18"
+        ],
+        "nodeType": "PragmaDirective",
+        "src": "0:24:0"
+      },
+      {
+        "baseContracts": [],
+        "contractDependencies": [],
+        "contractKind": "contract",
+        "documentation": null,
+        "fullyImplemented": true,
+        "id": 2,
+        "linearizedBaseContracts": [
+          2
+        ],
+        "name": "Fund",
+        "nodeType": "ContractDefinition",
+        "nodes": [],
+        "scope": 3,
+        "src": "26:20:0"
+      }
+    ],
+    "src": "0:47:0"
+  },
+  "compiler": {
+    "name": "solc",
+    "version": "0.4.24+commit.e67f0147.Emscripten.clang"
+  },
+  "networks": {
+    "4447": {
+      "events": {},
+      "links": {},
+      "address": "0xf204a4ef082f5c04bb89f7d5e6568b796096735a",
+      "transactionHash": "0x5de540816616b487a43196b41208de223b9bfc2deb3eadb2c05ee5590c18248d"
+    }
+  },
+  "schemaVersion": "2.0.1",
+  "updatedAt": "2018-09-05T03:21:38.978Z"
+}

@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
+import Fund from '../../../build/contracts/Fund.json';
 import ipfs from '../../ipfs';
 import getWeb3 from '../../utils/getWeb3';
 import firebase from '../../firebase.js'
-
 import Nav from '../../Navbar.js';
 import Photo from '../Photo/index.js';
 import { Button, Row, Grid, Col, Media, Modal, } from 'react-bootstrap'
@@ -21,7 +20,6 @@ class App extends Component {
     }
 
     this.photosRef = firebase.database().ref('photos');
-
     this.showPhotos = this.showPhotos.bind(this);
   }
 
@@ -44,6 +42,9 @@ class App extends Component {
        let photos = snapshot.val();
        let newState = [];
        for (let photo in photos) {
+
+         debugger;
+         
          newState.push({
            hash: photos[photo].hash
          });
@@ -59,22 +60,13 @@ class App extends Component {
 
   instantiateContract() {
     const contract = require('truffle-contract')
-    const simpleStorage = contract(SimpleStorageContract)
-    simpleStorage.setProvider(this.state.web3.currentProvider)
-    var simpleStorageInstance
+    const fund = contract(Fund)
+    fund.setProvider(this.state.web3.currentProvider)
 
     this.state.web3.eth.getAccounts((error, accounts) => {
-      simpleStorage.deployed().then((instance) => {
-        simpleStorageInstance = instance
-
-        // Stores a given value, 5 by default.
-        return simpleStorageInstance.set(5, {from: accounts[0]})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return simpleStorageInstance.get.call(accounts[0])
-      }).then((result) => {
-        // Update state with the result.
-        return this.setState({ storageValue: result.c[0] })
+      fund.deployed().then((instance) => {
+        this.fundInstance = instance
+        this.setState({ account: accounts[0] });
       })
     })
   }

@@ -20,6 +20,7 @@ export default class myNav extends React.Component {
         show: false,
         web3: null,
         ipfsBuffer: null,
+        ipfsDocumentHash: null,
       };
     }
 
@@ -58,7 +59,6 @@ export default class myNav extends React.Component {
 
     onSubmit(e) {
       e.preventDefault()
-
       var results = new Promise((resolve, reject) => {
         ipfs.files.add(this.state.ipfsBuffer, (err, result) => {
           if (err) {
@@ -67,16 +67,36 @@ export default class myNav extends React.Component {
           }
 
           const url = `https://ipfs.io/ipfs/${result[0].hash}`;
-          console.log(`${url}`)
-          this.addHash(result[0].hash);
+          console.log(`${url}`);
+
+          // this.addHash(result[0].hash);
+          this.setState({ ipfsDocumentHash: result[0].hash });
 
           resolve();
         })
       })
 
       results.then(() => {
-        this.showPhotos();
-        this.handleClose();
+          const hashData = JSON.stringify({
+            address: this.state.account,
+            photo: this.state.ipfsDocumentHash,
+          });
+
+          ipfs.add(Buffer.from(hashData), (err, result) => {
+            if (err) {
+              console.error(err);
+              return;
+            }
+
+            debugger;
+
+            this.addHash(result[0].hash);
+            this.showPhotos();
+            this.handleClose();
+
+            // randall figure out how to fix this I need to save the right info here
+            //   // return this.setState({ipfsHash: result[0].hash});
+          });
       })
     }
 
