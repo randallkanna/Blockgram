@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Nav, Navbar, NavItem, MenuItem, NavDropdown, Modal} from 'react-bootstrap';
+import Fund from '../build/contracts/Fund.json';
 import ipfs from './ipfs';
 import getWeb3 from './utils/getWeb3';
 import firebase from './firebase.js';
@@ -21,12 +22,39 @@ export default class myNav extends React.Component {
         web3: null,
         ipfsBuffer: null,
         ipfsDocumentHash: null,
+        account: null,
       };
+    }
+
+    componentWillMount() {
+      getWeb3
+      .then(results => {
+        this.setState({
+          web3: results.web3
+        })
+        this.instantiateContract()
+      })
+      .catch(() => {
+        console.log('Error finding web3.')
+      })
     }
 
     componentWillUnmount() {
       firebase.removeBinding(this.photosRef);
     }
+
+    instantiateContract() {
+      const contract = require('truffle-contract')
+      const fund = contract(Fund)
+      fund.setProvider(this.state.web3.currentProvider)
+
+      this.state.web3.eth.getAccounts((error, accounts) => {
+        fund.deployed().then((instance) => {
+          this.fundInstance = instance
+          this.setState({ account: accounts[0] });
+        })
+      })
+    };
 
     captureUpload(event) {
       event.preventDefault()
@@ -69,7 +97,6 @@ export default class myNav extends React.Component {
           const url = `https://ipfs.io/ipfs/${result[0].hash}`;
           console.log(`${url}`);
 
-          // this.addHash(result[0].hash);
           this.setState({ ipfsDocumentHash: result[0].hash });
 
           resolve();
@@ -93,9 +120,6 @@ export default class myNav extends React.Component {
             this.addHash(result[0].hash);
             this.showPhotos();
             this.handleClose();
-
-            // randall figure out how to fix this I need to save the right info here
-            //   // return this.setState({ipfsHash: result[0].hash});
           });
       })
     }

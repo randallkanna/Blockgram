@@ -43,8 +43,6 @@ class App extends Component {
        let newState = [];
        for (let photo in photos) {
 
-         debugger;
-         
          newState.push({
            hash: photos[photo].hash
          });
@@ -84,6 +82,8 @@ class App extends Component {
       var results = new Promise((resolve, reject) => {
         photoHashList.map(function(ipfsHash) {
           var hash = ipfsHash.hash;
+
+          debugger
 
           photos.push(hash);
         })

@@ -14,6 +14,8 @@ class Photo extends Component {
       account: null,
     }
 
+    debugger;
+
     this.setStateValues = this.setStateValues.bind(this);
   }
 
@@ -42,6 +44,21 @@ class Photo extends Component {
       })
     })
   }
+
+  // ipfs.files.cat(hash, function(err, files) {
+  //   if (err) {
+  //     console.erorr(err);
+  //     return;
+  //   }
+  //
+  //   const photo = JSON.parse(files);
+  //
+  //   photos.push(photo.photo);
+  //
+  //   resolve();
+  // })
+
+  //   // return this.setState({ipfsHash: result[0].hash});
 
   sendFunds(event, fund) {
     event.preventDefault();
