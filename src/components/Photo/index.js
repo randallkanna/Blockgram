@@ -14,8 +14,6 @@ class Photo extends Component {
       account: null,
     }
 
-    debugger;
-
     this.setStateValues = this.setStateValues.bind(this);
   }
 
@@ -45,29 +43,13 @@ class Photo extends Component {
     })
   }
 
-  // ipfs.files.cat(hash, function(err, files) {
-  //   if (err) {
-  //     console.erorr(err);
-  //     return;
-  //   }
-  //
-  //   const photo = JSON.parse(files);
-  //
-  //   photos.push(photo.photo);
-  //
-  //   resolve();
-  // })
-
-  //   // return this.setState({ipfsHash: result[0].hash});
-
-  sendFunds(event, fund) {
+  sendFunds(event) {
     event.preventDefault();
     var inWei = this.state.web3.toWei(this.state.fundAmount, 'ether');
 
-    console.log(`Fund: ${fund.ipfsStorageHash}`);
-
-    // need to get the address of the photo
-    this.fundInstance.sendToPhoto(fund.address, {from: this.state.account, value: inWei, gas: 470000, gasPrice: this.state.web3.toWei(1, 'gwei')});
+    this.fundInstance.sendToPhoto(this.props.photo.address, {from: this.state.account, value: inWei, gas: 470000, gasPrice: this.state.web3.toWei(1, 'gwei')}).then(() => {
+      alert('Funds sent!');
+    })
   }
 
   setStateValues(event) {
@@ -77,9 +59,9 @@ class Photo extends Component {
   render() {
     return (
       <div className="photo">
-        <img src={`https://ipfs.io/ipfs/${this.props.photo}`} alt=""/>
+        <img src={`https://ipfs.io/ipfs/${this.props.photo.photo}`} alt=""/>
 
-        <form onSubmit={(e) => {this.sendFunds(e, this.props.fund)}}>
+        <form onSubmit={(e) => {this.sendFunds(e)}}>
           <input type="number" name="fundAmount" value={this.state.fundAmount} onChange={(e) => this.setStateValues(e)} />
           <input type="submit" / >
         </form>

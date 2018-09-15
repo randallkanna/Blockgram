@@ -83,12 +83,19 @@ class App extends Component {
         photoHashList.map(function(ipfsHash) {
           var hash = ipfsHash.hash;
 
-          debugger
+          ipfs.files.cat(hash, function(err, files) {
+            if (err) {
+              console.error(err);
+              return;
+            }
 
-          photos.push(hash);
+            const photo = JSON.parse(files);
+
+            photos.push(photo);
+
+            resolve();
+          })
         })
-
-        resolve();
       })
 
       results.then(() => {
@@ -109,7 +116,6 @@ class App extends Component {
           <Grid>
             <Row className="show-grid">
               <Col md={8}>
-                <h3>Photos</h3>
                   {photos}
               </Col>
             </Row>
