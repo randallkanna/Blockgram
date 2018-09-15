@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
-import SimpleStorageContract from '../../../build/contracts/SimpleStorage.json';
+import Fund from '../../../build/contracts/Fund.json';
 import ipfs from '../../ipfs';
 import getWeb3 from '../../utils/getWeb3';
 import firebase from '../../firebase.js'
-
 import Nav from '../../Navbar.js';
 import Photo from '../Photo/index.js';
 import { Button, Row, Grid, Col, Media, Modal, } from 'react-bootstrap'
@@ -21,11 +20,7 @@ class App extends Component {
     }
 
     this.photosRef = firebase.database().ref('photos');
-
-    this.captureUpload = this.captureUpload.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
     this.showPhotos = this.showPhotos.bind(this);
-    this.addHash = this.addHash.bind(this);
   }
 
   componentWillMount() {
@@ -47,6 +42,7 @@ class App extends Component {
        let photos = snapshot.val();
        let newState = [];
        for (let photo in photos) {
+
          newState.push({
            hash: photos[photo].hash
          });
@@ -62,22 +58,13 @@ class App extends Component {
 
   instantiateContract() {
     const contract = require('truffle-contract')
-    const simpleStorage = contract(SimpleStorageContract)
-    simpleStorage.setProvider(this.state.web3.currentProvider)
-    var simpleStorageInstance
+    const fund = contract(Fund)
+    fund.setProvider(this.state.web3.currentProvider)
 
     this.state.web3.eth.getAccounts((error, accounts) => {
-      simpleStorage.deployed().then((instance) => {
-        simpleStorageInstance = instance
-
-        // Stores a given value, 5 by default.
-        return simpleStorageInstance.set(5, {from: accounts[0]})
-      }).then((result) => {
-        // Get the value from the contract to prove it worked.
-        return simpleStorageInstance.get.call(accounts[0])
-      }).then((result) => {
-        // Update state with the result.
-        return this.setState({ storageValue: result.c[0] })
+      fund.deployed().then((instance) => {
+        this.fundInstance = instance
+        this.setState({ account: accounts[0] });
       })
     })
   }
@@ -96,56 +83,25 @@ class App extends Component {
         photoHashList.map(function(ipfsHash) {
           var hash = ipfsHash.hash;
 
-          photos.push(hash);
-        })
+          ipfs.files.cat(hash, function(err, files) {
+            if (err) {
+              console.error(err);
+              return;
+            }
 
-        resolve();
+            const photo = JSON.parse(files);
+
+            photos.push(photo);
+
+            resolve();
+          })
+        })
       })
 
       results.then(() => {
         this.setState({ completePhotosList: photos });
       });
     }
-  }
-
-  captureUpload(event) {
-    event.preventDefault()
-    const file = event.target.files[0]
-    const reader = new window.FileReader()
-
-    reader.readAsArrayBuffer(file)
-    reader.onloadend = () => {
-      this.setState({ ipfsBuffer: Buffer(reader.result) })
-    }
-  }
-
-  addHash(hash) {
-    this.photosRef.push({
-      hash,
-    })
-  }
-
-  onSubmit(e) {
-    e.preventDefault()
-
-    var results = new Promise((resolve, reject) => {
-      ipfs.files.add(this.state.ipfsBuffer, (err, result) => {
-        if (err) {
-          console.error(err)
-          return
-        }
-
-        const url = `https://ipfs.io/ipfs/${result[0].hash}`;
-        console.log(`${url}`)
-        this.addHash(result[0].hash);
-
-        resolve();
-      })
-    })
-
-    results.then(() => {
-      this.showPhotos();
-    })
   }
 
   render() {
@@ -155,19 +111,12 @@ class App extends Component {
 
     return (
       <div>
-        <Nav/>
+        <Nav parentMethod={this.showPhotos} />
         <div>
           <Grid>
             <Row className="show-grid">
-              <Col md={4}>
-                <form onSubmit={this.onSubmit}>
-                  <input type="file" onChange={this.captureUpload} />
-                  <input type="submit" />
-                </form>
-              <Col md={8}>
-                <h3>Photos</h3>
+              <Col>
                   {photos}
-              </Col>
               </Col>
             </Row>
           </Grid>

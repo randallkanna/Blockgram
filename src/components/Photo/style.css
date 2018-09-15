@@ -1,3 +1,13 @@
-.photo img {
-  /* margin: 0 auto; */
+.add-photo-button {
+  margin-top: 8px;
+}
+
+.photo {
+  display: flex;
+  justify-content: center;
+}
+
+.send-funds {
+  display: flex;
+  justify-content: center;
 }
