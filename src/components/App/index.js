@@ -115,7 +115,7 @@ class App extends Component {
         <div>
           <Grid>
             <Row className="show-grid">
-              <Col md={8}>
+              <Col>
                   {photos}
               </Col>
             </Row>

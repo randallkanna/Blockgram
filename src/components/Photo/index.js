@@ -58,13 +58,16 @@ class Photo extends Component {
 
   render() {
     return (
-      <div className="photo">
-        <img src={`https://ipfs.io/ipfs/${this.props.photo.photo}`} alt=""/>
-
-        <form onSubmit={(e) => {this.sendFunds(e)}}>
-          <input type="number" name="fundAmount" value={this.state.fundAmount} onChange={(e) => this.setStateValues(e)} />
-          <input type="submit" / >
-        </form>
+      <div>
+        <div className="photo">
+          <img src={`https://ipfs.io/ipfs/${this.props.photo.photo}`} alt=""/>
+        </div>
+        <div className="send-funds">
+          <form onSubmit={(e) => {this.sendFunds(e)}}>
+            <input type="number" name="fundAmount" value={this.state.fundAmount} onChange={(e) => this.setStateValues(e)} />
+            <input type="submit" / >
+          </form>
+        </div>
       </div>
     )
   }

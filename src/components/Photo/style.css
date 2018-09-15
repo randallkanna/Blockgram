@@ -2,7 +2,12 @@
   margin-top: 8px;
 }
 
-.photo img {
+.photo {
+  display: flex;
+  justify-content: center;
+}
+
+.send-funds {
   display: flex;
   justify-content: center;
 }
