@@ -114,9 +114,7 @@ export default class myNav extends React.Component {
               console.error(err);
               return;
             }
-
-            debugger;
-
+            
             this.addHash(result[0].hash);
             this.showPhotos();
             this.handleClose();
