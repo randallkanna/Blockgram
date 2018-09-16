@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import './style.css'
 import Fund from '../../../build/contracts/Fund.json';
 import getWeb3 from '../../utils/getWeb3'
+import { Button, Row, Grid, Col, Media, Modal } from 'react-bootstrap'
 // import ipfs from './ipfs';
 
 class Photo extends Component {
@@ -47,7 +48,11 @@ class Photo extends Component {
     event.preventDefault();
     var inWei = this.state.web3.toWei(this.state.fundAmount, 'ether');
 
-    this.fundInstance.sendToPhoto(this.props.photo.address, {from: this.state.account, value: inWei, gas: 470000, gasPrice: this.state.web3.toWei(1, 'gwei')}).then(() => {
+    this.fundInstance.sendToPhoto(this.props.photo.address, {
+        from: this.state.account,
+        value: inWei,
+        gas: 470000,
+        gasPrice: this.state.web3.toWei(1, 'gwei')}).then(() => {
       alert('Funds sent!');
     })
   }
@@ -60,7 +65,7 @@ class Photo extends Component {
     return (
       <div>
         <div className="photo">
-          <img src={`https://ipfs.io/ipfs/${this.props.photo.photo}`} alt=""/>
+          <img src={`https://ipfs.io/ipfs/${this.props.photo.photo}`} alt="" />
         </div>
         <div className="send-funds">
           <form onSubmit={(e) => {this.sendFunds(e)}}>
