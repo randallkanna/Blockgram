@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Fund from '../../../build/contracts/Fund.json';
 import ipfs from '../../ipfs';
 import getWeb3 from '../../utils/getWeb3';
-import firebase from '../../firebase.js'
 import Nav from '../../Navbar.js';
 import Photo from '../Photo/index.js';
 import { Button, Row, Grid, Col, Media, Modal, } from 'react-bootstrap'
@@ -16,11 +15,11 @@ class App extends Component {
       web3: null,
       ipfsBuffer: null,
       completePhotosList: [],
-      photos: {},
+      photo: '',
     }
 
-    this.photosRef = firebase.database().ref('photos');
     this.showPhotos = this.showPhotos.bind(this);
+    this.setPhoto = this.setPhoto.bind(this);
   }
 
   componentWillMount() {
@@ -29,31 +28,22 @@ class App extends Component {
       this.setState({
         web3: results.web3
       })
-      this.instantiateContract()
+      this.instantiateContract();
     })
     .catch(() => {
       console.log('Error finding web3.')
     })
   }
 
-  componentDidMount() {
-    const photosRef = firebase.database().ref('photos');
-     this.photosRef.on('value', (snapshot) => {
-       let photos = snapshot.val();
-       let newState = [];
-       for (let photo in photos) {
+  setPhoto() {
+    const account = this.state.account
+    this.fundInstance.getHash(account).then((result) => {
+      this.setState({
+        photo: result
+      });
 
-         newState.push({
-           hash: photos[photo].hash
-         });
-       }
-
-       this.setState({
-         photos: newState
-       });
-
-       this.showPhotos();
-     });
+      this.showPhotos();
+    })
   }
 
   instantiateContract() {
@@ -65,43 +55,44 @@ class App extends Component {
       fund.deployed().then((instance) => {
         this.fundInstance = instance
         this.setState({ account: accounts[0] });
+        this.setPhoto();
       })
     })
   }
 
-  componentWillUnmount() {
-    firebase.removeBinding(this.photosRef);
-  }
-
   showPhotos() {
-    const photoHashList = this.state.photos;
     const photos = [];
     const currentComponent = this;
 
-    if (photoHashList.length > 0) {
-      var results = new Promise((resolve, reject) => {
-        photoHashList.map(function(ipfsHash) {
-          var hash = ipfsHash.hash;
-
-          ipfs.files.cat(hash, function(err, files) {
-            if (err) {
-              console.error(err);
-              return;
-            }
-
-            const photo = JSON.parse(files);
-
-            photos.push(photo);
-
-            resolve();
-          })
-        })
+    let hash;
+    var hashResults = new Promise((resolve, reject) => {
+      this.fundInstance.getHash(this.state.account).then((result) => {
+        hash = result
+        resolve();
       })
+    })
 
-      results.then(() => {
-        this.setState({ completePhotosList: photos });
-      });
-    }
+    hashResults.then(() => {
+      this.setState({photo: hash})
+    });
+
+    var results = new Promise((resolve, reject) => {
+      ipfs.files.cat(this.state.photo, function(err, files) {
+        if (err) {
+          console.error(err);
+          return;
+        }
+
+        const photo = JSON.parse(files);
+
+        photos.push(photo);
+        resolve();
+      })
+    })
+
+    results.then(() => {
+      this.setState({ completePhotosList: photos });
+    });
   }
 
   render() {

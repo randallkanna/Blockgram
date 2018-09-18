@@ -3,7 +3,6 @@ import './style.css'
 import Fund from '../../../build/contracts/Fund.json';
 import getWeb3 from '../../utils/getWeb3'
 import { Button, Row, Grid, Col, Media, Modal } from 'react-bootstrap'
-// import ipfs from './ipfs';
 
 class Photo extends Component {
   constructor(props) {
