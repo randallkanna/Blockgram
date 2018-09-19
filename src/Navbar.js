@@ -3,7 +3,6 @@ import { Button, Nav, Navbar, NavItem, MenuItem, NavDropdown, Modal} from 'react
 import Fund from '../build/contracts/Fund.json';
 import ipfs from './ipfs';
 import getWeb3 from './utils/getWeb3';
-import firebase from './firebase.js';
 
 export default class myNav extends React.Component {
     constructor(props, context) {
@@ -14,8 +13,6 @@ export default class myNav extends React.Component {
       this.onSubmit = this.onSubmit.bind(this);
       this.captureUpload = this.captureUpload.bind(this);
       this.addHash = this.addHash.bind(this);
-
-      this.photosRef = firebase.database().ref('photos');
 
       this.state = {
         show: false,
@@ -37,10 +34,6 @@ export default class myNav extends React.Component {
       .catch(() => {
         console.log('Error finding web3.')
       })
-    }
-
-    componentWillUnmount() {
-      firebase.removeBinding(this.photosRef);
     }
 
     instantiateContract() {
@@ -76,9 +69,7 @@ export default class myNav extends React.Component {
     }
 
     addHash(hash) {
-      this.photosRef.push({
-        hash,
-      })
+      this.fundInstance.setHash(hash, {from: this.state.account});
     }
 
     showPhotos() {
@@ -114,7 +105,7 @@ export default class myNav extends React.Component {
               console.error(err);
               return;
             }
-            
+
             this.addHash(result[0].hash);
             this.showPhotos();
             this.handleClose();
